@@ -554,6 +554,19 @@
     letter-spacing: 0.01em;
     line-height: 1.2;
   }
+  #gameTitleCur {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    background: var(--accent-dim);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    padding: 3px 9px;
+    letter-spacing: 0.05em;
+    align-self: center;
+  }
+  #gameTitleCur:empty { display: none; }
 
   /* ══════ 派彩分佈整理台（RTP 頁籤，全部 scope 在 #tab-rtp）══════ */
   #tab-rtp .rtp-header { margin-bottom: 24px; }
@@ -696,6 +709,7 @@
   <div class="game-title" id="gameTitle" style="display:none">
     <span class="game-title-dot"></span>
     <span id="gameTitleText">—</span>
+    <span id="gameTitleCur"></span>
   </div>
 
   <div class="filter-bar">
@@ -1252,6 +1266,11 @@ function refresh() {
   document.getElementById('gameNameTag').textContent = label;
   const gt = document.getElementById('gameTitle');
   document.getElementById('gameTitleText').textContent = label;
+  // 幣別跟在遊戲名後面；多幣別時全部列出，提醒金額類指標可能混幣
+  const currencies = [...new Set(allData.map(d => d.currency).filter(Boolean))].sort();
+  const curLabel = currencies.join(' / ');
+  document.getElementById('gameTitleCur').textContent = curLabel;
+  document.getElementById('gameNameTag').textContent = curLabel ? label + ' · ' + curLabel : label;
   gt.style.display = names.length ? 'flex' : 'none';
 }
 function guardDateRange() {
@@ -1292,6 +1311,7 @@ function toRow(obj, i) {
     date: (obj['ProDate (月日期)'] || '').replace(/"/g,'').trim(),
     order: i,
     gameName: (obj['GameName_TW'] || '').replace(/"/g,'').trim(),
+    currency: String(pickField(obj, ['Currency', '幣別'], ['幣'])).replace(/"/g,'').trim(),
     player: (obj['PlayerType'] || '').trim(),
     version: ((obj['ChanceVersion'] || '').replace(/"/g,'').trim()) || ((obj['ProbGroup'] || '').replace(/"/g,'').trim()),
     rounds: parseFloat(cleanNum(obj['人均局數'])) || 0,
@@ -1327,6 +1347,7 @@ function parseXLSX(buffer) {
       date: String(obj['ProDate (月日期)'] || '').trim(),
       order: i,
       gameName: String(obj['GameName_TW'] || '').trim(),
+      currency: String(pickField(obj, ['Currency', '幣別'], ['幣']) || '').trim(),
       player: String(obj['PlayerType'] || '').trim(),
       version: String(obj['ChanceVersion'] || '').trim() || String(obj['ProbGroup'] || '').trim(),
       rounds: parseFloat(clean('人均局數')) || 0,
