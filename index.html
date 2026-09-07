@@ -64,7 +64,28 @@
     top: 0;
     z-index: 100;
   }
-  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .topbar-left { display: flex; align-items: center; gap: 16px; }
+  /* ── TAB BAR ── */
+  .tabbar { display: flex; gap: 4px; }
+  .tabbtn {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text1);
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .tabbtn:hover { color: var(--text0); background: var(--bg2); }
+  .tabbtn.active {
+    color: var(--accent);
+    background: var(--accent-dim);
+    border-color: var(--accent);
+  }
+  .tab-panel[hidden] { display: none; }
   .logo-dot {
     width: 8px; height: 8px; border-radius: 50%;
     background: var(--accent);
@@ -534,6 +555,109 @@
     line-height: 1.2;
   }
 
+  /* ══════ 派彩分佈整理台（RTP 頁籤，全部 scope 在 #tab-rtp）══════ */
+  #tab-rtp .rtp-header { margin-bottom: 24px; }
+  #tab-rtp .rtp-eyebrow {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+    color: var(--text1); text-transform: uppercase; margin-bottom: 8px;
+  }
+  #tab-rtp .rtp-h1 { font-size: 24px; font-weight: 500; margin: 0 0 8px; color: var(--text0); letter-spacing: 0.01em; }
+  #tab-rtp .rtp-lead { color: var(--text1); font-size: 13px; margin: 0; max-width: 640px; line-height: 1.6; }
+
+  #tab-rtp .quick-card {
+    background: var(--bg1); border: 1px solid var(--accent);
+    border-radius: 8px; padding: 16px 18px 18px; margin: 0 0 18px;
+  }
+  #tab-rtp .quick-head {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 10px; margin-bottom: 10px;
+  }
+  #tab-rtp .quick-title { font-size: 13px; font-weight: 500; color: var(--text0); display: flex; align-items: center; gap: 8px; }
+  #tab-rtp .badge {
+    font-family: var(--mono); font-size: 10px; font-weight: 500;
+    color: var(--accent); background: var(--accent-dim);
+    padding: 2px 8px; border-radius: 20px; border: 1px solid var(--accent);
+    letter-spacing: 0.03em;
+  }
+  #tab-rtp .quick-upload { display: flex; align-items: center; gap: 8px; }
+  #tab-rtp .upload-btn {
+    font-family: var(--mono); font-size: 12px; font-weight: 500;
+    border: 1px solid var(--border-hover); color: var(--text1); background: var(--bg2);
+    border-radius: 6px; padding: 6px 12px; cursor: pointer; transition: background 0.15s, color 0.15s;
+  }
+  #tab-rtp .upload-btn:hover { background: var(--bg3); color: var(--text0); }
+  #tab-rtp .file-name { font-family: var(--mono); font-size: 11.5px; color: var(--text1); }
+
+  #tab-rtp .divider { display: flex; align-items: center; text-align: center; color: var(--text2); font-size: 12px; margin: 22px 0; }
+  #tab-rtp .divider::before, #tab-rtp .divider::after { content: ''; flex: 1; border-bottom: 1px dashed var(--border); }
+  #tab-rtp .divider span { padding: 0 12px; white-space: nowrap; }
+
+  #tab-rtp .inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 0 0 18px; }
+  @media (max-width: 720px) { #tab-rtp .inputs { grid-template-columns: 1fr; } }
+  #tab-rtp .input-card { background: var(--bg1); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px 16px; }
+  #tab-rtp .input-card label { display: flex; align-items: baseline; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text0); margin-bottom: 8px; }
+  #tab-rtp textarea {
+    width: 100%; min-height: 190px; resize: vertical;
+    border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px;
+    font-family: var(--mono); font-size: 12px; color: var(--text0); background: var(--bg2); outline: none;
+  }
+  #tab-rtp #fullReport { min-height: 120px; }
+  #tab-rtp textarea:focus { border-color: var(--accent); background: var(--bg2); }
+  #tab-rtp textarea::placeholder { color: var(--text2); }
+
+  #tab-rtp .actions { display: flex; align-items: center; gap: 12px; margin: 6px 0 8px; }
+  #tab-rtp .quick-actions { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+  #tab-rtp .process-btn {
+    background: var(--accent); color: var(--bg0); border: none; border-radius: 8px;
+    padding: 10px 20px; font-size: 13px; font-weight: 500; font-family: var(--sans);
+    cursor: pointer; transition: filter 0.15s, transform 0.15s;
+  }
+  #tab-rtp .process-btn:hover { filter: brightness(1.08); }
+  #tab-rtp .process-btn:active { transform: scale(0.98); }
+  #tab-rtp .status-msg { font-size: 13px; color: var(--red); font-family: var(--mono); }
+
+  #tab-rtp .empty-state {
+    border: 1px dashed var(--border-hover); border-radius: 8px; padding: 32px 20px;
+    text-align: center; color: var(--text1); font-size: 13px; background: var(--bg1);
+  }
+  #tab-rtp .output { margin-top: 8px; }
+  #tab-rtp .table-card { background: var(--bg1); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+  #tab-rtp table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12.5px; }
+  #tab-rtp thead th {
+    text-align: left; padding: 10px 14px; font-family: var(--sans); font-weight: 500; font-size: 12px;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  #tab-rtp th.col-tier { color: var(--text0); background: var(--bg2); }
+  #tab-rtp th.col-occur { color: var(--amber); background: var(--amber-dim); }
+  #tab-rtp th.col-rtp { color: var(--accent); background: var(--accent-dim); }
+  #tab-rtp th.col-x { color: var(--blue); background: var(--blue-dim); }
+  #tab-rtp tbody td { padding: 9px 14px; border-bottom: 1px solid var(--border); white-space: nowrap; color: var(--text0); }
+  #tab-rtp tbody tr:last-child td { border-bottom: none; }
+  #tab-rtp tbody tr.zero-row { color: var(--text2); background: var(--bg2); }
+  #tab-rtp tbody tr:hover { background: var(--bg2); }
+  #tab-rtp .rtp-cell { position: relative; }
+  #tab-rtp .rtp-bar { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, var(--accent-dim), transparent); z-index: 0; }
+  #tab-rtp .rtp-value { position: relative; z-index: 1; }
+  #tab-rtp tfoot td { padding: 10px 14px; font-weight: 500; color: var(--text0); background: var(--bg2); border-top: 1px solid var(--border); }
+  #tab-rtp .note { font-size: 11.5px; color: var(--text1); padding: 10px 14px 14px; border-top: 1px dashed var(--border); }
+
+  #tab-rtp .copy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 720px) { #tab-rtp .copy-grid { grid-template-columns: 1fr; } }
+  #tab-rtp .copy-card { background: var(--bg1); border: 1px solid var(--border); border-left: 4px solid var(--text2); border-radius: 8px; padding: 12px 14px 14px; }
+  #tab-rtp .copy-card.occur { border-left-color: var(--amber); }
+  #tab-rtp .copy-card.rtp { border-left-color: var(--accent); }
+  #tab-rtp .copy-card.xspins { border-left-color: var(--blue); }
+  #tab-rtp .copy-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  #tab-rtp .copy-card-head span { font-size: 12.5px; font-weight: 500; color: var(--text0); }
+  #tab-rtp .copy-btn {
+    font-family: var(--mono); font-size: 11px; border: 1px solid var(--border-hover);
+    background: var(--bg2); color: var(--text1); border-radius: 6px; padding: 5px 9px;
+    cursor: pointer; transition: background 0.15s, color 0.15s;
+  }
+  #tab-rtp .copy-btn:hover { background: var(--bg3); color: var(--text0); }
+  #tab-rtp .copy-btn.copied { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+  #tab-rtp pre.copy-block { margin: 0; font-family: var(--mono); font-size: 12.5px; white-space: pre; overflow-x: auto; color: var(--text0); line-height: 1.6; }
+
   /* ── SCROLLBAR ── */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg0); }
@@ -546,15 +670,21 @@
 <div class="topbar">
   <div class="topbar-left">
     <div class="logo-dot"></div>
-    <h1>遊戲數據分析工具</h1>
+    <h1>遊戲數據工具</h1>
+    <nav class="tabbar">
+      <button class="tabbtn active" data-tab="analytics" onclick="switchTab('analytics')">數據分析</button>
+      <button class="tabbtn" data-tab="rtp" onclick="switchTab('rtp')">派彩分佈</button>
+    </nav>
   </div>
   <div style="display:flex;align-items:center;gap:10px;">
-    <button id="themeBtn" onclick="toggleTheme()" style="font-family:var(--mono);font-size: 11px;padding:3px 12px;border-radius:4px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.06);color:#9099aa;cursor:pointer;letter-spacing:0.03em;">☀️ 淺色</button>
+    <button id="themeBtn" onclick="toggleTheme()" style="font-family:var(--mono);font-size: 11px;padding:3px 12px;border-radius:4px;border:1px solid var(--border-hover);background:var(--bg2);color:var(--text1);cursor:pointer;letter-spacing:0.03em;">☀️ 淺色</button>
     <div class="topbar-tag" id="gameNameTag">—</div>
   </div>
 </div>
 
 <div class="main">
+
+ <div id="tab-analytics" class="tab-panel">
 
   <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display:none" />
   <div class="upload-zone" id="uploadZone" onclick="var fi=document.getElementById('fileInput');if(fi)fi.click();">
@@ -664,6 +794,89 @@
       </tbody>
     </table>
   </div>
+
+ </div><!-- /#tab-analytics -->
+
+ <div id="tab-rtp" class="tab-panel" hidden>
+
+  <header class="rtp-header">
+    <div class="rtp-eyebrow">Probability Engineering · Report Tool</div>
+    <h1 class="rtp-h1">派彩分佈整理台</h1>
+    <p class="rtp-lead">貼上原始的 RTP 分佈表與 X Spins 分佈表，自動合併成標準級距、去除累積值，並產生可直接複製的欄位。</p>
+  </header>
+
+  <section class="quick-card">
+    <div class="quick-head">
+      <span class="quick-title">整份報表貼上／上傳<span class="badge">自動擷取</span></span>
+      <div class="quick-upload">
+        <input type="file" id="fileUpload" accept=".txt,.html,.htm" hidden>
+        <button class="upload-btn" id="uploadBtn">選擇檔案（.txt / .html）</button>
+        <span class="file-name" id="fileName"></span>
+      </div>
+    </div>
+    <textarea id="fullReport" placeholder="把整份報表內容直接貼在這裡，或用右上角按鈕上傳檔案。支援兩種整份格式：&#10;・純文字 ChanceReport（.txt），自動找出「SpecialGame Range」和「Multiple Information」區塊&#10;・FastTest HTML 報表（.html），自動找出「贏分分組統計」和「倍數分布統計」表格&#10;其餘區塊會自動略過。"></textarea>
+    <div class="quick-actions">
+      <button class="process-btn" id="extractBtn">自動擷取並整理 →</button>
+      <span class="status-msg" id="extractStatus"></span>
+    </div>
+  </section>
+
+  <div class="divider"><span>或者，手動分別貼上兩個區塊</span></div>
+
+  <section class="inputs">
+    <div class="input-card">
+      <label for="table1">① 贏分分組統計(SpecialGame Range)</label>
+      <textarea id="table1" placeholder="支援兩種格式：表格匯出（Win Range / Total Occur / Total RTP），或 SpecialGame Range 原始輸出（x = 0 - ... AppearRate | RTP ...）。"></textarea>
+    </div>
+    <div class="input-card">
+      <label for="table2">② 倍數分布統計(Multiple Information)</label>
+      <textarea id="table2" placeholder="支援兩種格式：表格匯出（Range / 1 in X Spins），或 Multiple Information 原始輸出（N <= x < M - 約 N局觸發 ...）。"></textarea>
+    </div>
+  </section>
+
+  <div class="actions">
+    <button class="process-btn" id="processBtn">整理表格 →</button>
+    <span class="status-msg" id="statusMsg"></span>
+  </div>
+
+  <div class="empty-state" id="emptyState">
+    貼上兩份報表後按「整理表格」，結果會顯示在這裡。
+  </div>
+
+  <section class="output" id="output" hidden>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-tier">獎項區間</th>
+            <th class="col-occur">Total Occur</th>
+            <th class="col-rtp">Total RTP</th>
+            <th class="col-x">X Spins</th>
+          </tr>
+        </thead>
+        <tbody id="rtpTableBody"></tbody>
+        <tfoot id="tableFoot"></tfoot>
+      </table>
+      <div class="note">「0~1倍」的 X Spins 已改用 100 ÷ 合併後 Total Occur 反推，因原始表分母包含「0」未中獎，與其餘級距分母不一致。複製區塊已排除「0（未中獎）」列。</div>
+    </div>
+
+    <div class="copy-grid">
+      <div class="copy-card occur">
+        <div class="copy-card-head"><span>Total Occur</span><button class="copy-btn" data-target="occurBlock">一鍵複製</button></div>
+        <pre class="copy-block" id="occurBlock"></pre>
+      </div>
+      <div class="copy-card rtp">
+        <div class="copy-card-head"><span>Total RTP</span><button class="copy-btn" data-target="rtpBlock">一鍵複製</button></div>
+        <pre class="copy-block" id="rtpBlock"></pre>
+      </div>
+      <div class="copy-card xspins">
+        <div class="copy-card-head"><span>X Spins</span><button class="copy-btn" data-target="xspinsBlock">一鍵複製</button></div>
+        <pre class="copy-block" id="xspinsBlock"></pre>
+      </div>
+    </div>
+  </section>
+
+ </div><!-- /#tab-rtp -->
 
 </div>
 
@@ -1470,6 +1683,397 @@ function toggleLock() {
   const observer = new MutationObserver(() => attachDrag());
   observer.observe(grid, { childList: true, subtree: true, characterData: true });
   attachDrag();
+})();
+
+// ══════ 頁籤切換 ══════
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => { p.hidden = (p.id !== 'tab-' + name); });
+  document.querySelectorAll('.tabbtn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  document.getElementById('gameNameTag').style.display = (name === 'analytics') ? '' : 'none';
+  // 圖表若在隱藏時尺寸為 0，切回時重繪一次
+  if (name === 'analytics' && typeof updateCharts === 'function' && allData.length) updateCharts();
+}
+
+// ══════ 派彩分佈整理台（RTP 頁籤邏輯）══════
+(function initRtpTool(){
+  const TIERS = [
+    { key:'0',        label:'0（未中獎）', min:0,    max:0,        point:true },
+    { key:'0~1',       label:'0~1倍',      min:0,    max:1 },
+    { key:'1~6',       label:'1~6倍',      min:1,    max:6 },
+    { key:'6~10',      label:'6~10倍',     min:6,    max:10 },
+    { key:'10~15',     label:'10~15倍',    min:10,   max:15 },
+    { key:'15~30',     label:'15~30倍',    min:15,   max:30 },
+    { key:'30~50',     label:'30~50倍',    min:30,   max:50 },
+    { key:'50~100',    label:'50~100倍',   min:50,   max:100 },
+    { key:'100~200',   label:'100~200倍',  min:100,  max:200 },
+    { key:'200~500',   label:'200~500倍',  min:200,  max:500 },
+    { key:'500~1000',  label:'500~1000倍', min:500,  max:1000 },
+    { key:'>1000',     label:'>1000倍',    min:1000, max:Infinity }
+  ];
+
+  function parseRange(label){
+    label = label.trim();
+    if (/^-?\d+(\.\d+)?$/.test(label)){
+      const n = parseFloat(label);
+      return { lower:n, upper:n, point:true };
+    }
+    const m = label.match(/[\[\(]\s*([\d.,]+)\s*,\s*([^\)\]]+)[\)\]]/);
+    if (!m) return null;
+    const lower = parseFloat(m[1].replace(/,/g,''));
+    const upperRaw = m[2].trim();
+    const upper = /inf|∞/i.test(upperRaw) ? Infinity : parseFloat(upperRaw.replace(/,/g,''));
+    if (isNaN(lower)) return null;
+    return { lower, upper, point:false };
+  }
+
+  function findTier(range){
+    if (range.point && range.lower === 0) return TIERS[0];
+    for (let i=1;i<TIERS.length;i++){
+      const t = TIERS[i];
+      const upperOk = t.max === Infinity ? true : range.lower < t.max;
+      if (range.lower >= t.min && upperOk) return t;
+    }
+    return null;
+  }
+
+  function splitCols(line){
+    return line.split(/\t+| {2,}/).map(c=>c.trim()).filter(c=>c.length>0);
+  }
+
+  function parseTable1(text){
+    const sums = {};
+    TIERS.forEach(t => sums[t.key] = { occur:0, rtp:0 });
+    let matched = 0;
+    text.split('\n').forEach(raw => {
+      const line = raw.trim();
+      if (!line) return;
+      const cols = splitCols(line);
+      if (cols.length < 3) return;
+      if (/win range/i.test(cols[0])) return;
+      const range = parseRange(cols[0]);
+      if (!range) return;
+      const tier = findTier(range);
+      if (!tier) return;
+      const occurVal = parseFloat(cols[1].split('/')[0].replace(/,/g,''));
+      const rtpVal = parseFloat(cols[2].split('/')[0].replace(/,/g,''));
+      if (isNaN(occurVal) || isNaN(rtpVal)) return;
+      sums[tier.key].occur += occurVal;
+      sums[tier.key].rtp += rtpVal;
+      matched++;
+    });
+    return { sums, matched };
+  }
+
+  function isExactTierMatch(range, tier){
+    const upperOk = tier.max === Infinity ? range.upper === Infinity : range.upper === tier.max;
+    return range.lower === tier.min && upperOk;
+  }
+
+  function parseTable2(text){
+    const xspins = {};
+    const exactMatch = {};
+    let matched = 0;
+    text.split('\n').forEach(raw => {
+      const line = raw.trim();
+      if (!line) return;
+      const cols = splitCols(line);
+      if (cols.length < 2) return;
+      if (/range/i.test(cols[0])) return;
+      let rowMatched = false;
+      for (let i = 0; i + 1 < cols.length; i += 2){
+        const range = parseRange(cols[i]);
+        if (!range) continue;
+        const tier = findTier(range);
+        if (!tier) continue;
+        const cleaned = cols[i+1].replace(/,/g,'');
+        const nums = cleaned.match(/[\d.]+/g);
+        if (!nums || nums.length === 0) continue;
+        const val = parseFloat(nums[nums.length - 1]);
+        if (isNaN(val)) continue;
+        const isExact = isExactTierMatch(range, tier);
+        if (!(tier.key in xspins) || (isExact && !exactMatch[tier.key])){
+          xspins[tier.key] = val;
+          exactMatch[tier.key] = isExact;
+        }
+        rowMatched = true;
+      }
+      if (rowMatched) matched++;
+    });
+    return { xspins, matched };
+  }
+
+  function parseRangeEngine(line){
+    let m = line.match(/x\s*=\s*(-?[\d.]+)/);
+    if (m){
+      const n = parseFloat(m[1]);
+      return { lower:n, upper:n, point:true, matchEnd: m.index + m[0].length };
+    }
+    m = line.match(/(-?[\d.]+)\s*<=?\s*x\s*<=?\s*(-?[\d.]+)/);
+    if (m){
+      const lower = parseFloat(m[1]);
+      const upperRaw = parseFloat(m[2]);
+      const upper = (upperRaw === -1) ? Infinity : upperRaw;
+      return { lower, upper, point:false, matchEnd: m.index + m[0].length };
+    }
+    return null;
+  }
+
+  function detectTable1Format(text){
+    return (/AppearRate/i.test(text) || /x\s*=|<=?\s*x\s*<=?/.test(text)) ? 'engine' : 'legacy';
+  }
+  function detectTable2Format(text){
+    return (/局(觸發|触发)|Multiple Information/i.test(text)) ? 'engine' : 'legacy';
+  }
+
+  function parseTable1Engine(text){
+    const sums = {};
+    TIERS.forEach(t => sums[t.key] = { occur:0, rtp:0 });
+    let matched = 0;
+    text.split('\n').forEach(raw => {
+      const line = raw.trim();
+      if (!line) return;
+      const range = parseRangeEngine(line);
+      if (!range) return;
+      const tier = findTier(range);
+      if (!tier) return;
+      const rest = line.slice(range.matchEnd);
+      const segments = rest.split('|');
+      if (segments.length < 2) return;
+      const occurPcts = segments[0].match(/-?[\d.]+%/g);
+      const rtpPcts = segments[1].match(/-?[\d.]+%/g);
+      if (!occurPcts || !rtpPcts) return;
+      const occurVal = parseFloat(occurPcts[0]);
+      const rtpVal = parseFloat(rtpPcts[0]);
+      if (isNaN(occurVal) || isNaN(rtpVal)) return;
+      sums[tier.key].occur += occurVal;
+      sums[tier.key].rtp += rtpVal;
+      matched++;
+    });
+    return { sums, matched };
+  }
+
+  function parseTable2Engine(text){
+    const xspins = {};
+    let matched = 0;
+    text.split('\n').forEach(raw => {
+      const line = raw.trim();
+      if (!line) return;
+      const range = parseRangeEngine(line);
+      if (!range) return;
+      const tier = findTier(range);
+      if (!tier) return;
+      const rest = line.slice(range.matchEnd);
+      const preParen = rest.split('(')[0];
+      let val;
+      if (/\+?\s*inf/i.test(preParen)){
+        val = Infinity;
+      } else {
+        const m = preParen.match(/([\d.]+)\s*局(?:觸發|触发)/);
+        if (!m) return;
+        val = parseFloat(m[1]);
+        if (isNaN(val)) return;
+      }
+      xspins[tier.key] = val;
+      matched++;
+    });
+    return { xspins, matched };
+  }
+
+  function fmtPct(n){ return n.toFixed(2) + '%'; }
+  function fmtX(n){
+    if (n === null || n === undefined || isNaN(n)) return '-';
+    if (n === Infinity) return '∞';
+    return n.toFixed(4);
+  }
+
+  function process(){
+    const t1 = document.getElementById('table1').value;
+    const t2 = document.getElementById('table2').value;
+    const statusMsg = document.getElementById('statusMsg');
+    statusMsg.textContent = '';
+    if (!t1.trim() || !t2.trim()){
+      statusMsg.textContent = '請將兩份表格都貼上再整理。';
+      return;
+    }
+    const r1 = detectTable1Format(t1) === 'engine' ? parseTable1Engine(t1) : parseTable1(t1);
+    const r2 = detectTable2Format(t2) === 'engine' ? parseTable2Engine(t2) : parseTable2(t2);
+    if (r1.matched === 0){
+      statusMsg.textContent = '無法辨識贏分分組統計，請確認格式為 Win Range/Total Occur/Total RTP，或 x=.../AppearRate/RTP 格式。';
+      return;
+    }
+    if (r2.matched === 0){
+      statusMsg.textContent = '無法辨識倍數分布統計，請確認格式為 Range/1 in X Spins，或 x=.../局觸發 格式。';
+      return;
+    }
+    const rows = TIERS.map(t => {
+      const occur = r1.sums[t.key].occur;
+      const rtp = r1.sums[t.key].rtp;
+      let x;
+      if (t.key === '0') x = null;
+      else if (t.key === '0~1') x = occur > 0 ? 100 / occur : null;
+      else x = (t.key in r2.xspins) ? r2.xspins[t.key] : null;
+      return { ...t, occur, rtp, x };
+    });
+    renderTable(rows);
+    renderCopyBlocks(rows);
+    document.getElementById('emptyState').hidden = true;
+    document.getElementById('output').hidden = false;
+  }
+
+  function renderTable(rows){
+    const body = document.getElementById('rtpTableBody');
+    const maxRtp = Math.max(...rows.slice(1).map(r => r.rtp), 0.0001);
+    body.innerHTML = rows.map(r => {
+      const barWidth = r.key === '0' ? 0 : Math.min(100, (r.rtp / maxRtp) * 100);
+      return `<tr class="${r.key === '0' ? 'zero-row' : ''}">
+        <td>${r.label}</td>
+        <td>${fmtPct(r.occur)}</td>
+        <td class="rtp-cell"><span class="rtp-bar" style="width:${barWidth}%"></span><span class="rtp-value">${fmtPct(r.rtp)}</span></td>
+        <td>${fmtX(r.x)}</td>
+      </tr>`;
+    }).join('');
+    const totalOccur = rows.reduce((s,r) => s + r.occur, 0);
+    const totalRtp = rows.reduce((s,r) => s + r.rtp, 0);
+    document.getElementById('tableFoot').innerHTML =
+      `<tr><td>總計</td><td>${fmtPct(totalOccur)}</td><td>${fmtPct(totalRtp)}</td><td>—</td></tr>`;
+  }
+
+  function renderCopyBlocks(rows){
+    const tierRows = rows.filter(r => r.key !== '0');
+    document.getElementById('occurBlock').textContent = tierRows.map(r => fmtPct(r.occur)).join('\n');
+    document.getElementById('rtpBlock').textContent = tierRows.map(r => fmtPct(r.rtp)).join('\n');
+    document.getElementById('xspinsBlock').textContent = tierRows.map(r => fmtX(r.x)).join('\n');
+  }
+
+  function copyBlock(btn){
+    const targetId = btn.getAttribute('data-target');
+    const text = document.getElementById(targetId).textContent;
+    function done(){
+      btn.textContent = '已複製 ✓';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = '一鍵複製'; btn.classList.remove('copied'); }, 1400);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+    } else {
+      fallbackCopy(text, done);
+    }
+  }
+  function fallbackCopy(text, cb){
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+    cb();
+  }
+
+  function isHtmlContent(text){
+    return /<!DOCTYPE\s+html|<html[\s>]|<table[\s>]/i.test(text);
+  }
+  function htmlTableToTSV(table){
+    const rows = table.querySelectorAll('tr');
+    const lines = [];
+    rows.forEach(tr => {
+      const cells = tr.querySelectorAll('th,td');
+      const vals = Array.from(cells).map(c => (c.textContent || '').trim());
+      lines.push(vals.join('\t'));
+    });
+    return lines.join('\n');
+  }
+  function extractHtmlSectionTSV(doc, titleText){
+    const headers = doc.querySelectorAll('h4, h3, h2');
+    for (const h of headers){
+      if (h.textContent && h.textContent.trim().includes(titleText)){
+        let container = h.closest ? h.closest('.result-section') : null;
+        if (!container){
+          container = h.parentElement;
+          while (container && container.className && container.className.indexOf('result-section') === -1){
+            container = container.parentElement;
+          }
+        }
+        const scope = container || doc;
+        const table = scope.querySelector('table');
+        if (table) return htmlTableToTSV(table);
+      }
+    }
+    return null;
+  }
+  function extractSection(fullText, sectionName){
+    const lines = fullText.split('\n');
+    let startIdx = -1;
+    for (let i = 0; i < lines.length; i++){
+      if (lines[i].includes(sectionName) && lines[i].includes('*')){
+        startIdx = i + 1;
+        break;
+      }
+    }
+    if (startIdx === -1) return null;
+    const collected = [];
+    for (let i = startIdx; i < lines.length; i++){
+      const line = lines[i];
+      if (/-{10,}/.test(line)) break;
+      if (/\*{5,}/.test(line)) break;
+      collected.push(line);
+    }
+    const result = collected.join('\n').trim();
+    return result.length > 0 ? result : null;
+  }
+
+  function extractAndProcess(){
+    const fullText = document.getElementById('fullReport').value;
+    const extractStatus = document.getElementById('extractStatus');
+    extractStatus.textContent = '';
+    if (!fullText.trim()){
+      extractStatus.textContent = '請先貼上整份報表內容，或上傳檔案。';
+      return;
+    }
+    let t1Extract, t2Extract;
+    if (isHtmlContent(fullText)){
+      let doc;
+      try {
+        const parser = new DOMParser();
+        doc = parser.parseFromString(fullText, 'text/html');
+      } catch (e){
+        extractStatus.textContent = '無法解析 HTML 內容，請確認檔案格式。';
+        return;
+      }
+      t1Extract = extractHtmlSectionTSV(doc, '贏分分組統計');
+      t2Extract = extractHtmlSectionTSV(doc, '倍數分布統計');
+    } else {
+      t1Extract = extractSection(fullText, 'SpecialGame Range');
+      t2Extract = extractSection(fullText, 'Multiple Information');
+    }
+    if (!t1Extract && !t2Extract){
+      extractStatus.textContent = '找不到對應的兩個區塊，請確認報表格式。';
+      return;
+    }
+    if (!t1Extract){ extractStatus.textContent = '找不到「贏分分組統計 / SpecialGame Range」區塊。'; return; }
+    if (!t2Extract){ extractStatus.textContent = '找不到「倍數分布統計 / Multiple Information」區塊。'; return; }
+    document.getElementById('table1').value = t1Extract;
+    document.getElementById('table2').value = t2Extract;
+    extractStatus.textContent = '已自動擷取兩個區塊 ✓';
+    process();
+  }
+
+  document.getElementById('extractBtn').addEventListener('click', extractAndProcess);
+  document.getElementById('uploadBtn').addEventListener('click', () => { document.getElementById('fileUpload').click(); });
+  document.getElementById('fileUpload').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      document.getElementById('fullReport').value = evt.target.result;
+      document.getElementById('fileName').textContent = file.name;
+    };
+    reader.onerror = () => { document.getElementById('extractStatus').textContent = '檔案讀取失敗，請改用貼上文字的方式。'; };
+    reader.readAsText(file, 'utf-8');
+  });
+  document.getElementById('processBtn').addEventListener('click', process);
+  document.querySelectorAll('#tab-rtp .copy-btn').forEach(btn => { btn.addEventListener('click', () => copyBlock(btn)); });
 })();
 </script>
 </body>
