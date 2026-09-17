@@ -367,12 +367,14 @@
   }
   .chart-tab:hover { background: var(--bg3); color: var(--text0); }
   .chart-tab.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  /* minmax(0,1fr)：canvas 的內建尺寸不能撐開欄寬，兩欄永遠等寬 */
+  .charts-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; margin-bottom: 20px; }
   .chart-card {
     background: var(--bg1);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 16px;
+    min-width: 0;
   }
   .chart-card-title {
     font-family: var(--mono);
@@ -382,7 +384,8 @@
     letter-spacing: 0.08em;
     margin-bottom: 12px;
   }
-  .chart-card canvas { width: 100% !important; }
+  /* 固定高度的容器，讓兩張圖的 canvas 永遠同尺寸，不受長寬比或圖例行數影響 */
+  .chart-box { position: relative; height: 280px; width: 100%; }
   @media (max-width: 700px) { .charts-grid { grid-template-columns: 1fr; } }
 
   /* ── COMPARE ── */
@@ -780,11 +783,11 @@
     <div class="charts-grid">
       <div class="chart-card">
         <div class="chart-card-title" id="chartTitle0">新玩家 — 平均局數</div>
-        <canvas id="chart0" height="200"></canvas>
+        <div class="chart-box"><canvas id="chart0"></canvas></div>
       </div>
       <div class="chart-card">
         <div class="chart-card-title" id="chartTitle1">舊玩家 — 平均局數</div>
-        <canvas id="chart1" height="200"></canvas>
+        <div class="chart-box"><canvas id="chart1"></canvas></div>
       </div>
     </div>
   </div>
@@ -1561,6 +1564,8 @@ function buildChart(idx, playerType) {
     data,
     options: {
       responsive: true,
+      maintainAspectRatio: false,   // 高度交給 .chart-box 決定，兩張圖恆等
+      onResize: scheduleEqualize,   // 視窗變寬變窄、圖例重新折行後再對齊一次
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { labels: { color: colors.tick, font: { family: 'DM Mono', size: 11 }, boxWidth: 12 } },
@@ -1575,10 +1580,30 @@ function buildChart(idx, playerType) {
       },
       scales: {
         x: { ticks: { color: colors.tick, font: { family: 'DM Mono', size: 10 } }, grid: { color: colors.grid } },
-        y: { ticks: { color: colors.tick, font: { family: 'DM Mono', size: 10 } }, grid: { color: colors.grid } },
+        y: {
+          ticks: { color: colors.tick, font: { family: 'DM Mono', size: 10 } },
+          grid: { color: colors.grid },
+          afterFit: s => { s.width = 56; },   // y 軸固定寬，數字位數不同時繪圖區寬度也一致
+        },
       }
     }
   });
+}
+// 兩張圖的圖例項目數不同時會多折一行、把繪圖區壓矮；用上方 padding 把矮的那張補到一樣高
+function equalizeChartPlots() {
+  const cs = chartInstances.filter(Boolean);
+  if (cs.length < 2) return;
+  const maxLegend = Math.max(...cs.map(c => c.legend.height));
+  cs.forEach(c => {
+    const pad = Math.round(maxLegend - c.legend.height);
+    const cur = (c.options.layout && c.options.layout.padding && c.options.layout.padding.top) || 0;
+    if (cur !== pad) { c.options.layout = { padding: { top: pad } }; c.update('none'); }
+  });
+}
+let equalizeTimer = null;
+function scheduleEqualize() {
+  clearTimeout(equalizeTimer);
+  equalizeTimer = setTimeout(equalizeChartPlots, 50);
 }
 
 const PLAYER_TYPES_FOR_CHART = ['新玩家', '舊玩家'];
@@ -1594,6 +1619,7 @@ function updateCharts() {
   document.getElementById('chartTitle1').textContent = labels[1];
   buildChart(0, players.includes('新玩家') ? '新玩家' : players[0]);
   buildChart(1, players.includes('舊玩家') ? '舊玩家' : players[1] || players[0]);
+  equalizeChartPlots();
 }
 
 function switchChart(btn) {
