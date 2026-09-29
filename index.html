@@ -644,7 +644,9 @@
   #tab-rtp .stats-card { background: var(--bg1); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px 16px; margin-bottom: 20px; }
   #tab-rtp .stats-title { font-size: 13px; font-weight: 500; color: var(--text0); margin-bottom: 12px; display: flex; align-items: baseline; gap: 10px; }
   #tab-rtp .stats-src { font-family: var(--mono); font-size: 11px; color: var(--text2); font-weight: 400; }
-  #tab-rtp .stats-copy { margin-left: auto; align-self: center; }
+  #tab-rtp .stats-group-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+  #tab-rtp .stats-group-head .stats-group-title { margin-bottom: 0; }
+  #tab-rtp .stats-group-head .copy-btn { padding: 3px 8px; }
   #tab-rtp .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
   @media (max-width: 720px) { #tab-rtp .stats-grid { grid-template-columns: 1fr; } }
   #tab-rtp .stats-group { background: var(--bg2); border-radius: 6px; padding: 10px 12px; }
@@ -879,21 +881,23 @@
 
   <section class="output" id="output" hidden>
     <div class="stats-card" id="statsCard" hidden>
-      <div class="stats-title">遊戲指標<span class="stats-src">來自整份報表</span><button class="copy-btn stats-copy" data-target="statsBlock">一鍵複製</button></div>
-      <pre id="statsBlock" hidden></pre>
+      <div class="stats-title">遊戲指標<span class="stats-src">來自整份報表</span></div>
       <div class="stats-grid">
         <div class="stats-group">
-          <div class="stats-group-title">FG 觸發</div>
+          <div class="stats-group-head"><span class="stats-group-title">FG 觸發</span><button class="copy-btn" data-target="statsBlockFg">一鍵複製</button></div>
+          <pre id="statsBlockFg" hidden></pre>
           <div class="stats-row"><span>觸發手數</span><b id="stTrigger">—</b></div>
           <div class="stats-row"><span>平均倍數</span><b id="stAvgMult">—</b></div>
         </div>
         <div class="stats-group">
-          <div class="stats-group-title">RTP</div>
+          <div class="stats-group-head"><span class="stats-group-title">RTP</span><button class="copy-btn" data-target="statsBlockRtp">一鍵複製</button></div>
+          <pre id="statsBlockRtp" hidden></pre>
           <div class="stats-row"><span>MG</span><b id="stMg">—</b></div>
           <div class="stats-row"><span>FG</span><b id="stFg">—</b></div>
         </div>
         <div class="stats-group">
-          <div class="stats-group-title">起伏</div>
+          <div class="stats-group-head"><span class="stats-group-title">起伏</span><button class="copy-btn" data-target="statsBlockVol">一鍵複製</button></div>
+          <pre id="statsBlockVol" hidden></pre>
           <div class="stats-row"><span>SD</span><b id="stSd">—</b></div>
           <div class="stats-row"><span>PI</span><b id="stPi">—</b></div>
           <div class="stats-row"><span>Hit %</span><b id="stHit">—</b></div>
@@ -2159,8 +2163,11 @@ function switchTab(name) {
       ['stSd', f2(stats.sd)], ['stPi', f2(stats.pi)], ['stHit', p2(stats.hit)],
     ];
     vals.forEach(([id, v]) => { document.getElementById(id).textContent = v; });
-    // 一鍵複製：依卡片順序一行一個
-    document.getElementById('statsBlock').textContent = vals.map(([, v]) => v).join('\n');
+    // 每個板塊各自的一鍵複製：依板塊內順序一行一個
+    const v = Object.fromEntries(vals);
+    document.getElementById('statsBlockFg').textContent = [v.stTrigger, v.stAvgMult].join('\n');
+    document.getElementById('statsBlockRtp').textContent = [v.stMg, v.stFg].join('\n');
+    document.getElementById('statsBlockVol').textContent = [v.stSd, v.stPi, v.stHit].join('\n');
     card.hidden = false;
   }
 
