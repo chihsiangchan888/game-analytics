@@ -641,6 +641,16 @@
     text-align: center; color: var(--text1); font-size: 13px; background: var(--bg1);
   }
   #tab-rtp .output { margin-top: 8px; }
+  #tab-rtp .stats-card { background: var(--bg1); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px 16px; margin-bottom: 20px; }
+  #tab-rtp .stats-title { font-size: 13px; font-weight: 500; color: var(--text0); margin-bottom: 12px; display: flex; align-items: baseline; gap: 10px; }
+  #tab-rtp .stats-src { font-family: var(--mono); font-size: 11px; color: var(--text2); font-weight: 400; }
+  #tab-rtp .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 720px) { #tab-rtp .stats-grid { grid-template-columns: 1fr; } }
+  #tab-rtp .stats-group { background: var(--bg2); border-radius: 6px; padding: 10px 12px; }
+  #tab-rtp .stats-group-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 6px; }
+  #tab-rtp .stats-row { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text1); }
+  #tab-rtp .stats-row:last-child { border-bottom: none; }
+  #tab-rtp .stats-row b { font-family: var(--mono); font-weight: 500; font-size: 14px; color: var(--text0); }
   #tab-rtp .table-card { background: var(--bg1); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
   #tab-rtp table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12.5px; }
   #tab-rtp thead th {
@@ -865,6 +875,27 @@
   </div>
 
   <section class="output" id="output" hidden>
+    <div class="stats-card" id="statsCard" hidden>
+      <div class="stats-title">遊戲指標<span class="stats-src">來自整份報表</span></div>
+      <div class="stats-grid">
+        <div class="stats-group">
+          <div class="stats-group-title">FG 觸發</div>
+          <div class="stats-row"><span>觸發手數</span><b id="stTrigger">—</b></div>
+          <div class="stats-row"><span>平均倍數</span><b id="stAvgMult">—</b></div>
+        </div>
+        <div class="stats-group">
+          <div class="stats-group-title">RTP</div>
+          <div class="stats-row"><span>MG</span><b id="stMg">—</b></div>
+          <div class="stats-row"><span>FG</span><b id="stFg">—</b></div>
+        </div>
+        <div class="stats-group">
+          <div class="stats-group-title">起伏</div>
+          <div class="stats-row"><span>Hit %</span><b id="stHit">—</b></div>
+          <div class="stats-row"><span>SD</span><b id="stSd">—</b></div>
+          <div class="stats-row"><span>PI</span><b id="stPi">—</b></div>
+        </div>
+      </div>
+    </div>
     <div class="table-card">
       <table>
         <thead>
@@ -2076,6 +2107,58 @@ function switchTab(name) {
     return result.length > 0 ? result : null;
   }
 
+  // ── 遊戲指標（僅 FastTest HTML 整份報表有：RTP 統計、遊戲玩法資訊）──
+  function tsvRows(tsv){
+    if (!tsv) return [];
+    const lines = tsv.split('\n').map(l => l.split('\t'));
+    const head = lines[0] || [];
+    return lines.slice(1).map(cells => {
+      const o = {};
+      head.forEach((h, i) => { o[h.trim()] = (cells[i] || '').trim(); });
+      return o;
+    });
+  }
+  function num(v){
+    const n = parseFloat(String(v == null ? '' : v).replace(/[,%]/g, ''));
+    return isNaN(n) ? null : n;
+  }
+  function parseSummaryStats(doc){
+    const rtpRow = tsvRows(extractHtmlSectionTSV(doc, 'RTP 統計'))[0] || {};
+    const games = tsvRows(extractHtmlSectionTSV(doc, '遊戲玩法資訊'));
+    const mg = games.find(g => g.Game === 'MainGame') || {};
+    // FG = 非 MainGame 且有觸發頻率的列（SG0、SG1…）；多列時觸發率相加
+    const sg = games.filter(g => g.Game && g.Game !== 'MainGame' && num(g.Freq) > 0);
+    let trigger = null, avgMult = null, fgRtp = null;
+    if (sg.length === 1){
+      trigger = num(sg[0].Freq); avgMult = num(sg[0].Odds); fgRtp = num(sg[0].RTP);
+    } else if (sg.length > 1){
+      fgRtp = sg.reduce((s, g) => s + (num(g.RTP) || 0), 0);
+      trigger = 1 / sg.reduce((s, g) => s + 1 / num(g.Freq), 0);
+      avgMult = fgRtp / 100 * trigger;
+    }
+    const stats = {
+      trigger, avgMult,
+      mg: num(mg.RTP), fg: fgRtp,
+      hit: num(mg.HitRate),
+      sd: num(rtpRow.StdDev), pi: num(rtpRow['P.I.']),
+    };
+    return Object.values(stats).some(v => v !== null) ? stats : null;
+  }
+  function renderStats(stats){
+    const card = document.getElementById('statsCard');
+    if (!stats){ card.hidden = true; return; }
+    const f2 = v => v === null ? '—' : v.toFixed(2);
+    const p2 = v => v === null ? '—' : v.toFixed(2) + '%';
+    document.getElementById('stTrigger').textContent = f2(stats.trigger);
+    document.getElementById('stAvgMult').textContent = f2(stats.avgMult);
+    document.getElementById('stMg').textContent = p2(stats.mg);
+    document.getElementById('stFg').textContent = p2(stats.fg);
+    document.getElementById('stHit').textContent = p2(stats.hit);
+    document.getElementById('stSd').textContent = f2(stats.sd);
+    document.getElementById('stPi').textContent = f2(stats.pi);
+    card.hidden = false;
+  }
+
   function extractAndProcess(){
     const fullText = document.getElementById('fullReport').value;
     const extractStatus = document.getElementById('extractStatus');
@@ -2084,7 +2167,7 @@ function switchTab(name) {
       extractStatus.textContent = '請先貼上整份報表內容，或上傳檔案。';
       return;
     }
-    let t1Extract, t2Extract;
+    let t1Extract, t2Extract, stats = null;
     if (isHtmlContent(fullText)){
       let doc;
       try {
@@ -2096,6 +2179,7 @@ function switchTab(name) {
       }
       t1Extract = extractHtmlSectionTSV(doc, '贏分分組統計');
       t2Extract = extractHtmlSectionTSV(doc, '倍數分布統計');
+      stats = parseSummaryStats(doc);
     } else {
       t1Extract = extractSection(fullText, 'SpecialGame Range');
       t2Extract = extractSection(fullText, 'Multiple Information');
@@ -2110,6 +2194,7 @@ function switchTab(name) {
     document.getElementById('table2').value = t2Extract;
     extractStatus.textContent = '已自動擷取兩個區塊 ✓';
     process();
+    renderStats(stats);
   }
 
   document.getElementById('extractBtn').addEventListener('click', extractAndProcess);
@@ -2125,7 +2210,7 @@ function switchTab(name) {
     reader.onerror = () => { document.getElementById('extractStatus').textContent = '檔案讀取失敗，請改用貼上文字的方式。'; };
     reader.readAsText(file, 'utf-8');
   });
-  document.getElementById('processBtn').addEventListener('click', process);
+  document.getElementById('processBtn').addEventListener('click', () => { renderStats(null); process(); });
   document.querySelectorAll('#tab-rtp .copy-btn').forEach(btn => { btn.addEventListener('click', () => copyBlock(btn)); });
 })();
 </script>
