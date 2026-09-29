@@ -28,6 +28,8 @@
     --purple: #a78bfa;
     --purple-dim: rgba(167,139,250,0.12);
     --red: #f87171;
+    --median-bg: #102040;
+    --median-border: rgba(91,156,246,0.35);
     --mono: 'DM Mono', monospace;
     --sans: 'Noto Sans TC', sans-serif;
   }
@@ -39,6 +41,7 @@
     --amber:#8a5e0a;--amber-dim:rgba(138,94,10,0.12);
     --blue:#2255a4;--blue-dim:rgba(34,85,164,0.12);
     --purple:#5e3ab0;--purple-dim:rgba(94,58,176,0.12);
+    --median-bg:#dce7f7;--median-border:rgba(34,85,164,0.3);
   }
   body,*{transition:background-color 0.25s,border-color 0.25s,color 0.2s;}
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -376,6 +379,7 @@
     padding: 16px;
     min-width: 0;
   }
+  #chartSection.is-median .chart-card { background: var(--median-bg); border-color: var(--median-border); }
   .chart-card-title {
     font-family: var(--mono);
     font-size: 13px;
@@ -1614,6 +1618,8 @@ function updateCharts() {
   const section = document.getElementById('chartSection');
   if (!allData.length) { section.style.display = 'none'; return; }
   section.style.display = 'block';
+  // 中位數指標用深藍底，與平均值圖表區隔
+  section.classList.toggle('is-median', currentMetric.endsWith('-med'));
   const labels = METRIC_LABELS[currentMetric];
   document.getElementById('chartTitle0').textContent = labels[0];
   document.getElementById('chartTitle1').textContent = labels[1];
